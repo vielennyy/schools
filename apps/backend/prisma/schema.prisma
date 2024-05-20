@@ -1,0 +1,216 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+  DIRECTOR
+}
+
+enum QuestionType {
+  SINGLE
+  MULTIPLE
+  FREE_ANSWER
+}
+
+model User {
+  id          String  @id @default(uuid())
+  firstName   String? @map("first_name")
+  lastName    String? @map("last_name")
+  email       String  @unique
+  password    String?
+  googleId    String? @map("google_id")
+  avatarKey   String? @map("avatar_key")
+  surname     String?
+  phoneNumber String? @map("phone_nuber")
+  isActive    Boolean @default(false) @map("is_active")
+
+  VerificationToken VerificationToken?
+  teachers          Teacher[]
+  students          Student?
+  schoolId          String?
+  school            School?            @relation(fields: [schoolId], references: [id])
+  userRoles         UserRole[]
+
+  @@map("user")
+}
+
+model InvitationToClass {
+  id        String  @id @unique @default(uuid())
+  classId   String
+  class     Class   @relation(fields: [classId], references: [id])
+  studentId String  @unique
+  student   Student @relation(fields: [studentId], references: [id])
+
+  @@map("invitation_to_class")
+}
+
+model VerificationToken {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+  token  String @unique @default(uuid())
+
+  @@map("verification_token")
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  role   Role
+  userId String
+  user   User?  @relation(fields: [userId], references: [id])
+
+  @@unique([userId, role])
+  @@map("user_role")
+}
+
+model School {
+  id          String  @id @default(uuid())
+  title       String
+  description String
+  city        String
+  index       String
+  phone       String
+  email       String?
+  district    String?
+  classes     Class[]
+  directorId  String  @unique @map("director_id")
+  user        User[]
+
+  @@map("school")
+}
+
+model Teacher {
+  id      String  @id @default(uuid())
+  userId  String  @unique @map("user_id")
+  user    User    @relation(fields: [userId], references: [id])
+  classes Class[]
+  Quiz    Quiz[]
+
+  @@map("teacher")
+}
+
+model Class {
+  id                String              @id @default(uuid())
+  title             String
+  schoolId          String              @unique @map("school_id")
+  school            School              @relation(fields: [schoolId], references: [id])
+  students          Student[]
+  homeroomTeacherId String              @unique @map("homeroom_teacher_id")
+  homeroomTeacher   Teacher             @relation(fields: [homeroomTeacherId], references: [id])
+  invitations       InvitationToClass[]
+
+  @@map("class")
+}
+
+model Student {
+  id       String             @id @default(uuid())
+  userId   String             @unique @map("user_id")
+  user     User               @relation(fields: [userId], references: [id])
+  classId  String?            @map("class_id")
+  class    Class?             @relation(fields: [classId], references: [id])
+  invation InvitationToClass?
+  answers  StudentAnswer[]
+
+  @@map("student")
+}
+
+model Subject {
+  id    String @id @default(uuid())
+  title String
+  task  Task[]
+
+  @@map("subject")
+}
+
+model Task {
+  id          String           @id @default(uuid())
+  title       String
+  description String
+  ratings     String
+  subjectId   String           @unique @map("subject_id")
+  subject     Subject          @relation(fields: [subjectId], references: [id])
+  attachments TaskAttachment[]
+
+  @@map("task")
+}
+
+model Attachment {
+  id             String          @id @default(uuid())
+  attachment_key String
+  taskAttachment TaskAttachment?
+
+  @@map("attachment")
+}
+
+model TaskAttachment {
+  id           String     @id @default(uuid())
+  attachmentId String     @unique @map("attachment_id")
+  attachment   Attachment @relation(fields: [attachmentId], references: [id])
+  taskId       String     @unique @map("task_id")
+  task         Task       @relation(fields: [taskId], references: [id])
+
+  @@map("task_attachment")
+}
+
+model Quiz {
+  id        String         @id @default(uuid())
+  title     String
+  questions Question[]
+  creatorId String         @map("creator_id")
+  creator   Teacher        @relation(fields: [creatorId], references: [id])
+  Answer    StudentAnswer?
+
+  @@map("quiz")
+}
+
+model Question {
+  id            String         @id @default(uuid())
+  text          String
+  answer        String
+  answerOptions String         @unique @map("answer_options")
+  questionType  QuestionType   @map("question_type")
+  quiz          Quiz           @relation(fields: [quizId], references: [id])
+  quizId        String         @map("quiz_id")
+  Answer        StudentAnswer?
+  score         Int?
+
+  @@map("question")
+}
+
+model StudentAnswer {
+  id         String   @id @default(uuid())
+  student    Student  @relation(fields: [studentId], references: [id])
+  studentId  String   @unique @map("student_id")
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
+  quizId     String   @unique @map("quiz_id")
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String   @unique @map("question_id")
+  response   String
+  createdAt  DateTime @unique @default(now()) @map("create_at")
+
+  @@map("answer")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  createdAt DateTime @unique @default(now()) @map("create_at")
+  imageKey  String?  @map("image_key")
+
+  @@map("post")
+}

@@ -1,0 +1,24 @@
+{
+    "name": "school-helper",
+    "version": "1.0.0",
+    "description": "WIP.",
+    "type": "module",
+    "scripts": {
+      "backend:build": "pnpm -F @school-helper/backend build",
+      "backend:start": "pnpm -F @school-helper/backend start",
+      "frontend:dev": "pnpm -F @school-helper/frontend dev",
+      "frontend:build": "pnpm -F @school-helper/frontend build",
+      "build": "pnpm -r build"
+    },
+    "engines": {
+      "node": ">=18"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+gitUrl"
+    },
+    "bugs": {
+      "url": "gitUrl/issues"
+    },
+    "homepage": "gitUrl#readme"
+  }
