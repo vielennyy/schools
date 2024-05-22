@@ -35,4 +35,9 @@ export class ClassService {
   {
     return this.prismaService.student.findMany({where: {classId: classId}, include: {user: true}}) 
   }
+
+  async getClassesBySchoolId(schoolId: string)
+  {
+    return this.prismaService.class.findMany({where: {schoolId: schoolId}}) 
+  }
 }

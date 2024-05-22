@@ -8,6 +8,9 @@ import { CreateTest } from './components/Test/CreateTest';
 import { AdminPage } from './pages/AdminPage';
 import { AboutPage } from './pages/AboutPage';
 import { StartTest } from './components/Test/StartTest';
+import { SubjectPage } from './pages/SubjectPage';
+import { ContactPage } from './pages/ContactPage';
+import { BlogPage } from './pages/BlogPage';
 
 const AppRoutes = [
     {
@@ -21,7 +24,7 @@ const AppRoutes = [
     {
         path: '/blog',
         element: 
-        <></>
+        <BlogPage/>
     },
     {
         path: '/about',
@@ -29,7 +32,7 @@ const AppRoutes = [
     },
     {
         path: '/contacts',
-        element: <></>
+        element: <ContactPage/>
     },
     {
         path: '/create-task',
@@ -60,8 +63,12 @@ const AppRoutes = [
         element: <CreateSchool/>
     },
     {
-        path: '/create-test',
+        path: '/create-test/:subjectId?',
         element: <CreateTest/>
+    },
+    {
+        path: '/subject/:subjectId?',
+        element: <SubjectPage/>
     },
 ]
 

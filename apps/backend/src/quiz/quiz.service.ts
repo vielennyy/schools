@@ -10,18 +10,25 @@ import { StudentQuizWithQuestionDto } from './dto/student-quiz-with-question.dto
 export class QuizService {
   constructor(private readonly prismaService: PrismaService) {}
   async createQuiz(userId: string, createQuizDto: CreateQuizDto) {
-    console.log(userId);
     const teacher = await this.prismaService.teacher.findUnique({
       where: { userId: userId },
     });
 
     return this.prismaService.quiz.create({
-      data: { ...createQuizDto, creator: { connect: { id: teacher?.id } } },
+      data: { 
+        title: createQuizDto.title, 
+        creator: { connect: { id: teacher?.id } },
+        subject: { connect: { id: createQuizDto?.subjectId}},
+       },
     });
   }
 
   async getAllQuizzes() {
     return this.prismaService.quiz.findMany();
+  }
+
+  async getAllQuizzesBySubjectId(subjectId: string) {
+    return this.prismaService.quiz.findMany({ where: { subjectId: subjectId }});
   }
 
   async getQuizWithQuestion(quizId: string) {

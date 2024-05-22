@@ -5,10 +5,10 @@ import us from '../assets/img/us.jpg'
 export const AboutPage = () => {
 
     return(
-        <Box sx={{}}>
+        <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '30px 0'}}>
             <Typography variant='h2' color='black' sx={{padding: '20px 0'}}>Про нас</Typography>
             <img src={us} style={{width: '500px'}}/>
-            <Typography variant='h3' color='black'>{aboutDescription}</Typography>
+            <Typography variant='h3' color='black' sx={{width: '920px', textAlign: 'justify', marginTop: '20px'}}>{aboutDescription}</Typography>
         </Box>
     )
 }

@@ -28,6 +28,18 @@ export class ClassController {
   getOwnTeacherClass(@UserDec() user: any) {
     return this.classService.getTeacherClassByUserId(user.id);
   }
+
+  @Get('by-school:id')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Get classes by school id' })
+  @ApiParam({
+    name: 'id',
+    description: 'School id',
+    example: 'f2a720fe-275e-47e4-b10c-b0e00f5862e7',
+  })
+  getClassesBySchoolId(@Param('id') id: string) {
+    return this.classService.getClassesBySchoolId(id);
+  }
   
   @Get(':id')
   @UseGuards(JwtGuard)
@@ -40,4 +52,5 @@ export class ClassController {
   getStudentsByClassId(@Param('id') id: string) {
     return this.classService.getStudentsByClassId(id);
   }
+
 }

@@ -1,11 +1,13 @@
 import { Box, Button, Container, MenuItem, Select, SelectChangeEvent, TextField, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { TestQuestion } from "../../TypesAndInterfaces"
+import { useNavigate, useParams } from "react-router-dom";
 
 export const CreateTest = () => {
+    const subjectId:string = useParams<{ subject_id?: string }>().subjectId;
     const [questions, setQuestions] = useState<number[]>([1]);
     const [editMode, setEditMode] = useState<boolean>(true)
-    const [quizId, setQuizId] = useState<string>('1f620ffb-a354-41a9-91d4-2fbd53a2eeae')
+    const [quizId, setQuizId] = useState<string>('')
 
     const handleClick = () => {
         setQuestions([...questions, questions.length + 1]);
@@ -19,26 +21,40 @@ export const CreateTest = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        const reqBody = {title: title}
+        const reqBody = {title: title, subjectId: subjectId}
         console.log(reqBody)
         const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
-        const response = await fetch(`${baseUrl}/quiz`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                credentials: "include",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(reqBody),
+        try {
+            const response = await fetch(`${baseUrl}/quiz`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(reqBody),
             });
 
-    console.log(response);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-    if (response.ok) {
-      setEditMode(false)
-    } 
+            const res = await response.json();
+            // console.log(res.id)
+            setQuizId(prevstate => res.id);
+            // console.log(quizId)
+            setEditMode(false);
+            // console.log('Quiz created with ID:', res.id);
+        } catch (error) {
+            console.error('Error creating quiz:', error);
+        }
+        console.log(quizId)
   };
-    // }
+
+    const navigate = useNavigate()
+    const handleRedirect = () => {
+        navigate(`/subject/${subjectId}`)
+    }
+  
 
     return (
         <Container sx={{ margin: '25px auto', maxWidth: '1200px' }}>
@@ -60,8 +76,9 @@ export const CreateTest = () => {
                 <Button type='submit'>Створити</Button>
                 </form>
                 :
+                <>
                 <Typography variant='h3' color='black'>{title}</Typography>
-            }
+            
             
             {questions.map((question) => (
                 <CreateQuestion counter={question} quizId={quizId} />
@@ -71,9 +88,9 @@ export const CreateTest = () => {
                 <Button onClick={handleClick} sx={{ width: '200px', backgroundColor: '#423A34', color: 'white', margin: '10px auto' }}>
                     Додати запитання
                 </Button>
-                <Button sx={{ width: '200px', backgroundColor: '#423A34', color: 'white', margin: '10px 20px' }}>Зберегти тест</Button>
+                <Button onClick={handleRedirect} sx={{ width: '200px', backgroundColor: '#423A34', color: 'white', margin: '10px 20px' }}>Зберегти тест</Button>
             </Box>
-            
+            </>}
         </Container>
     );
 }
@@ -87,6 +104,7 @@ interface QuizItem {
 export const CreateQuestion = (props:QuizItem) => {
     const counter = props.counter
     const quizID = props.quizId
+    console.log(quizID)
     const [answArr, setAnswArr] = useState<string[]>([])
     const [answerOptionsArr, setAnswerOptionsArr] = useState<string[]>([])
     console.log(props)

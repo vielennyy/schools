@@ -29,7 +29,6 @@ export class QuizController {
     type: CreateQuizDto,
   })
   @ApiBody({ type: CreateQuizDto })
-  @Post()
   createQuiz(@UserDec() user: any, @Body() createQuizDto: CreateQuizDto) {
     console.log(user);
     return this.quizService.createQuiz(user.id, createQuizDto);
@@ -43,6 +42,16 @@ export class QuizController {
   })
   getAllQuizzes() {
     return this.quizService.getAllQuizzes();
+  }
+
+  @Get("by-subject/:id")
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'get by subject id' })
+  @ApiOkResponse({
+    // type: CreateQuizDto,
+  })
+  getAllQuizzesBySubjectId(@Param('id') id: string) {
+    return this.quizService.getAllQuizzesBySubjectId(id);
   }
 
   @Get('for-student/:id')

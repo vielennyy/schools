@@ -1,49 +1,50 @@
 import { Box, Button, Typography } from "@mui/material"
 import { CreateSubject } from "./CreateSubject"
+import { useEffect, useState, } from "react";
+import { GetSubject } from "../../TypesAndInterfaces";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { getSchoolData } from "../../store/reducers/school/schoolThunks";
+import { getSubjectData } from "../../store/reducers/subjects/subjectThunks";
+import { useNavigate } from "react-router-dom";
 
 export const Subjects = () => {
+    const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
+
+    const dispatch = useAppDispatch();
+    const subjects = useAppSelector((state) => state.subject.data);
+
+    useEffect(() => {
+        dispatch(getSubjectData());
+    }, [dispatch]);
+
+    console.log(subjects)
+
     return (
-        <>
+        <Box sx={{width: '1000px'}}>
         {/* <Empty/> */}
-        <CreateSubject/>
-        <SubjectItem/>
-        </>
+        <CreateSubject subjectLength={subjects?.length}/>
+        
+        {subjects?.map((subject:GetSubject) => <SubjectItem subject={subject}/>)}
+        </Box>
         
     )
 }
 
-export const Empty = () => {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: '100%', 
-                margin: '0 50px'
-            }}
-        >
-            <Box sx={{maxWidth: 800, width: '100%', margin: '0 auto', display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                alignItems: 'center',}}>
-                <Typography variant='h3' sx={{color: '#000', textAlign: 'center'}}>Жодного предмету поки що не створено</Typography>
-                <Typography align="center" sx={{padding: '20px 0'}}>Ви можете створити власний предмет та приєднати до нього клас учнів, що вже існує в системі, для публікації завдань та тестів</Typography>
-                <Button sx={{maxWidth: '210px', alignSelf: 'center', backgroundColor: '#423A34', borderRadius: '50px', color:'white', padding: '8px 30px', textTransform: 'none'}}>
-                    <Typography>Додати предмет</Typography>
-                </Button>
-            </Box>
-        </Box>
-    )
-}
+const SubjectItem = ({subject}) => {
 
-const SubjectItem = () => {
+    console.log(subject)
+
+    const navigate = useNavigate()
+
+    const handleRedirect = () => {
+        navigate(`/subject/${subject.id}`)
+    }
+
     return (
         <>
-        <Box sx={{borderRadius: '20px', border: '1px solid gray', padding: '30px'}}>
-            <Typography variant='h3' color='black'>Математика</Typography>
-            <Typography>7 клас</Typography>
+        <Box onClick={handleRedirect} sx={{borderRadius: '20px', border: '1px solid gray', padding: '30px', margin: '20px', width: '100%'}}>
+            <Typography variant='h3' color='black'>{subject.title}</Typography>
+            <Typography>{subject.class || 'class'}</Typography>
         </Box>
         </>
     )

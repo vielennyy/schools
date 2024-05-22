@@ -3,9 +3,6 @@ import { useState } from "react";
 import { ICreateSchool } from "../TypesAndInterfaces";
 import { useNavigate } from "react-router-dom";
 
-  
-  
-
 export const CreateSchool = () => {
 
   const districts = [
@@ -38,6 +35,8 @@ export const CreateSchool = () => {
 
   const navigate = useNavigate();
 
+  const [error, setError] = useState<string|null>(null)
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
@@ -54,7 +53,12 @@ export const CreateSchool = () => {
       }).then(() => navigate('/user'));
   
       if (!response.ok) {
+        setError(response.statusText)
+
         throw new Error("Failed to update user data");
+
+      } else {
+        setError(null)
       }
 
     } catch (error) {
@@ -107,6 +111,7 @@ export const CreateSchool = () => {
           <TextField onChange={handleFormChange} name='email' id="outlined-basic" label="Електрона адреса школи" variant="outlined" required sx={{margin:'25px 0'}}/>
           <Button variant="contained" type="submit" sx={{margin:'25px 0'}}>Зареєструвати</Button>        
         </form>
+        {error && <Typography color='red'>{error}</Typography>}
       </Container>
     </>
   )

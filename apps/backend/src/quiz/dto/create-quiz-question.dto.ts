@@ -34,6 +34,12 @@ export class CreateQuizQuestionDto {
   quizId: string;
 
   @ApiProperty({
+    example: '830e3783-0e16-4516-8659-040d526e7310',
+    description: 'subject Id',
+  })
+  subjectId: string
+
+  @ApiProperty({
     example: '10',
     description: 'score',
   })

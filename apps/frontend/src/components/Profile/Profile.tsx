@@ -81,7 +81,7 @@ export const Profile = () => {
   return (
     <>
       {user && (
-        <Container sx={{padding: '20px'}}>
+        <Container sx={{padding: '20px', width: '1200px'}}>
           <Typography variant="h4">Профіль</Typography>
           <Box
             sx={{
@@ -125,6 +125,7 @@ export const Profile = () => {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
+                  width: '300px'
                 }}
               >
                 <TextField

@@ -73,6 +73,18 @@ export type School = {
 export type TestQuestion = {
   text: string;
   // file?:
+  id?: string;
+  answer: string;
+  answerOptions: string;
+  questionType: string;
+  quizId: string;
+  score: string;
+};
+
+export type AnswerQuestion = {
+  text: string;
+  // file?:
+  id: string;
   answer: string;
   answerOptions: string;
   questionType: string;
@@ -99,4 +111,25 @@ export type Test = {
   title: string,
   creatorId: string,
   questions: TestQuestion[]
+}
+
+export type AnswerTest = {
+  id: string,
+  title: string,
+  creatorId: string,
+  questions: AnswerQuestion[]
+}
+
+export type GetSubject = {
+  id: string,
+  teacherId: string,
+  title: string,
+  class?: string,
+}
+
+export type GetClass = {
+  id: string,
+  title: string,
+  schoolId: string,
+  homeroomTeacherId: string 
 }
