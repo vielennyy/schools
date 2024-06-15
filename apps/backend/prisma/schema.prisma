@@ -126,6 +126,7 @@ model Student {
   class    Class?             @relation(fields: [classId], references: [id])
   invation InvitationToClass?
   answers  StudentAnswer[]
+  quizResult QuizResult[]
 
   @@map("student")
 }
@@ -182,6 +183,7 @@ model Quiz {
   subjectId String?        @map("subject_id")
   subject   Subject?       @relation(fields: [subjectId], references: [id])
   Answer    StudentAnswer[]
+  quizResult QuizResult[]
 
   @@map("quiz")
 }
@@ -195,7 +197,7 @@ model Question {
   quiz          Quiz           @relation(fields: [quizId], references: [id])
   quizId        String         @map("quiz_id")
   Answer        StudentAnswer[]
-  score         Int?
+  score         Int            @default(0)
 
   @@map("question")
 }
@@ -210,6 +212,7 @@ model StudentAnswer {
   questionId String   @map("question_id")
   response   String
   createdAt  DateTime @default(now()) @map("create_at")
+  score      Int?     @default(0)
 
   @@map("answer")
 }
@@ -222,4 +225,15 @@ model Post {
   imageKey  String?  @map("image_key")
 
   @@map("post")
+}
+
+model QuizResult {
+  id         String   @id @default(uuid())
+  student    Student  @relation(fields: [studentId], references: [id])
+  studentId  String   @map("student_id")
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
+  quizId     String   @map("quiz_id")
+  score      Int?     @default(0)
+
+  @@map("quiz_result")
 }

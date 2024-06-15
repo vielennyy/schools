@@ -65,6 +65,17 @@ export class QuizController {
     return this.quizService.getQuizWithQuestion(id);
   }
 
+  @Get('quiz-score/:quizid')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'get  quiz with question by quiz id' })
+  @ApiOkResponse({
+    // type: CreateQuizDto,
+  })
+  @ApiParam({ name: 'quizid', type: 'string' })
+  calculateScore(@Param('quizid') id: string, @UserDec() user: any) {
+    return this.quizService.calculateScore(user.id, id);
+  }
+
   @Get('answered/:quizid')
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.STUDENT)

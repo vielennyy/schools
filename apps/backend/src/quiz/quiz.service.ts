@@ -62,15 +62,20 @@ export class QuizService {
     if (!student) {
       return new NotFoundException();
     }
+    const question = await this.prismaService.question.findUnique({where: {id: responseQuestionDto.questionId}})
+    const score = question?.answer === responseQuestionDto.response ? question.score : 0;
 
-    return this.prismaService.studentAnswer.create({
+    const studentAnswer =  this.prismaService.studentAnswer.create({
       data: {
         student: { connect: { id: student?.id } },
         question: { connect: { id: responseQuestionDto.questionId } },
         quiz: { connect: { id: responseQuestionDto.quizId } },
         response: responseQuestionDto.response,
+        score: score,
       },
     });
+
+    return studentAnswer
   }
 
   async isAnsweredByStudent(
@@ -80,5 +85,20 @@ export class QuizService {
     const student = await this.prismaService.student.findUnique({where: {userId: userId}})
     const answer = await this.prismaService.studentAnswer.findFirst({where: {quizId: quizId, studentId: student?.id}})
     return answer ? true : false
+  }
+
+  async calculateScore (
+    userId: string,
+    quizId: string,
+  ){
+    if (!await this.isAnsweredByStudent(userId, quizId)) {
+      return 0
+    }
+
+    const student = await this.prismaService.student.findUnique({where: {userId: userId}})
+    const answers = await this.prismaService.studentAnswer.findMany({where: {quizId: quizId, studentId: student?.id}})
+    return answers.reduce((acc, currVal) => {
+      return acc + (currVal ? currVal.score! : 0)
+    }, 0)
   }
 }
