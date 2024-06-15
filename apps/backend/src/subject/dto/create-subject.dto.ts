@@ -6,5 +6,9 @@ export class CreateSubjectDto {
     description: 'Subject title',
   })
   title: string;
-//   classId: string;
+  @ApiProperty({
+    example: 'UUID',
+    description: 'Class id',
+  })
+  classId: string;
 }

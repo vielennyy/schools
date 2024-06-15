@@ -2,8 +2,10 @@ import { Box, Button, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { getSubjectData } from "../store/reducers/subjects/subjectThunks";
+import { getTeacherSubjectData } from "../store/reducers/subjects/subjectThunks";
 import { ShowTest } from "../components/Test/ShowTest";
+import { getClassesData } from "../store/reducers/classes/classesThunks";
+import { getSchoolData } from "../store/reducers/school/schoolThunks";
 
 export const SubjectPage = () => {
     const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
@@ -14,13 +16,17 @@ export const SubjectPage = () => {
     const [quizes, setQuizes] = useState([])
     const [show, setShow] = useState<boolean>(false)
 
+    const school = useAppSelector((state) => state.school.data) 
+    const classes = useAppSelector((state) => state.class.data);
+
     useEffect(() => {
-        dispatch(getSubjectData());
+        dispatch(getSchoolData())
+        dispatch(getTeacherSubjectData());
+        if (school) dispatch(getClassesData(school.id));
     }, [dispatch]);
 
-    console.log(subjects)
-
     const subject = subjects.find(obj => obj.id === subjectId);
+    const form = classes.find(obj => obj.id === subject?.classId)
 
     useEffect(()=> {
         const fetchData = async () => {
@@ -51,12 +57,12 @@ export const SubjectPage = () => {
             navigate(`/create-test/${subjectId}`)
         }
 
-        console.log(quizes)
+        // console.log(quizes)
 
     return(
         <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '30px 0'}}>
         <Typography variant="h2" color='black'>{subject?.title}</Typography>
-        <Typography variant="h3" color='black'>{subject?.class || 'class'}</Typography>
+        <Typography variant="h3" color='black'>{form?.title}</Typography>
         <Box sx={{width: '1000px', padding: '20px 0'}}>
             <Typography variant="h3" color='black'>Тести</Typography>
             <Button onClick={handleClick} sx={{ width: '200px', backgroundColor: '#423A34', color: 'white', margin: '20px auto' }}>

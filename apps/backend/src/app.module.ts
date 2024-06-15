@@ -14,6 +14,8 @@ import { QuizModule } from './quiz/quiz.module';
 import { PostModule } from './post/post.module';
 import { StudentModule } from './student/student.module';
 import { SubjectModule } from './subject/subject.module';
+// import { TaskService } from './task/task.service';
+// import { TasksModule } from './tasks/tasks.module';
 import mail from './config/mail';
 import app_config from './config/appconfig';
 
@@ -32,8 +34,11 @@ import app_config from './config/appconfig';
     PostModule,
     StudentModule,
     SubjectModule,
+    // TasksModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, 
+    // TaskService
+  ],
 })
 export class AppModule {}

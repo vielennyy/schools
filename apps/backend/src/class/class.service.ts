@@ -26,7 +26,7 @@ export class ClassService {
       include: { user: { include: { school: true } } },
     });
 
-    return this.prismaService.class.findUnique({
+    return this.prismaService.class.findFirst({
       where: { homeroomTeacherId: teacher!.id },
     });
   }

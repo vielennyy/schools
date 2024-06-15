@@ -1,19 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AnswerTest, AnswerQuestion } from '../../TypesAndInterfaces';
 import { Box, Button, Checkbox, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-
-
-const InputTypeEX:AnswerQuestion = {
-    answer: '2',
-    id: '',
-    answerOptions: '',
-    questionType: 'FREE_ANSWER',
-    quizId: '',
-    score: '2',
-    text: '7-5',
-}
+import { useParams } from 'react-router-dom';
 
 export const StartTest = () => {
+    const {testId} = useParams();
+
     const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
     const [test, setTest] = useState<AnswerTest>()
 
@@ -29,7 +21,7 @@ export const StartTest = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${baseUrl}/quiz/for-student/1f620ffb-a354-41a9-91d4-2fbd53a2eeae`, {
+                const response = await fetch(`${baseUrl}/quiz/for-student/${testId}`, {
                     method: "GET",
                     credentials: "include",
                     headers: {
@@ -43,7 +35,7 @@ export const StartTest = () => {
 
                 const data = await response.json();
                 setTest(data)
-                // console.log(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -54,12 +46,33 @@ export const StartTest = () => {
 
     // console.log(test)
 
-    const handleSubmit = async () => {
-        const reqBody = {
-            quizId: test?.id,
-            answers: answers,
-        }
+    const handleSubmit = () => {
+        event?.preventDefault()
+        // const reqBody = {
+        //     quizId: test?.id,
+        //     answers: answers,
+        // }
         console.log(answers)
+        test?.questions.map(async (item) => {
+            const reqBody = {quizId: testId, questionId: item.id, response: answers[item.id]};
+            console.log(reqBody)
+            try {
+            const response = await fetch(`${baseUrl}/quiz/question/answer`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(reqBody),
+            });
+            if (response.ok) {
+                console.log('Відповіді відправлено успішно:', response);
+                // console.log()
+              } 
+        } catch (error) {
+            console.error('Помилка при відправці відповідей:', error);
+        }
+        })
         // try {
         //     const response = await fetch(`${baseUrl}/quiz/submit`, {
         //         method: "GET",

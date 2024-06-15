@@ -2,7 +2,10 @@ import { Box, Typography, Button, Modal, TextField, MenuItem } from "@mui/materi
 import { useEffect, useState } from "react";
 import Close from "../../assets/img/Close icon.svg";
 import { GetClass } from "../../TypesAndInterfaces";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { getSchoolData } from "../../store/reducers/school/schoolThunks";
+import { getTeacherSubjectData } from "../../store/reducers/subjects/subjectThunks";
+import { getClassesData } from "../../store/reducers/classes/classesThunks";
 
 interface Subject {
   title: string,
@@ -25,7 +28,6 @@ export const CreateSubject = ({subjectLength}) => {
     p: 4,
   };
 
-  const [classes, setClasses] = useState<GetClass[]>([])
   const [formState, setFormState] = useState<Subject>({
     title: '',
     classId: '',
@@ -36,38 +38,21 @@ export const CreateSubject = ({subjectLength}) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  useEffect(()=> {
-    const fetchData = async () => {
-    try {
-        const response = await fetch(`${baseUrl}/class/by-school${user?.schoolId}`, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+  const dispatch = useAppDispatch();
+    const school = useAppSelector((state) => state.school.data) 
+    const classes = useAppSelector((state) => state.class.data);
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setClasses(data)
-        // console.log(data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }}
-    fetchData();
-    }, [baseUrl]);
-
-
+    useEffect(() => {
+        dispatch(getSchoolData())
+        if (school) dispatch(getClassesData(school.id));
+    }, [dispatch]);
   
   const handleCreate = async () => {
     console.log(formState)
     const baseUrl = import.meta.env.VITE_BACKEND_API_URL;
     const response = await fetch(`${baseUrl}/subject`, {
       method: "POST",
-      body: JSON.stringify({title: formState.title}),
+      body: JSON.stringify({title: formState.title, classId: formState.classId}),
       // JSON.stringify(formState),
       credentials: "include",
       headers: {

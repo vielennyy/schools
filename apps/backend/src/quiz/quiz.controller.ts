@@ -65,6 +65,18 @@ export class QuizController {
     return this.quizService.getQuizWithQuestion(id);
   }
 
+  @Get('answered/:quizid')
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(Role.STUDENT)
+  @ApiOperation({ summary: 'get information if student answers on quiz exist by quiz id' })
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  @ApiParam({ name: 'quizid', type: 'string'})
+  isAnsweredByStudent(@UserDec() user: any, @Param('quizid') quizid: string) {
+    return this.quizService.isAnsweredByStudent(user.id, quizid);
+  }
+
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(Role.TEACHER)
   @ApiOperation({ summary: 'Create quiz question' })

@@ -29,7 +29,7 @@ export class ClassController {
     return this.classService.getTeacherClassByUserId(user.id);
   }
 
-  @Get('by-school:id')
+  @Get('by-school/:id')
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Get classes by school id' })
   @ApiParam({

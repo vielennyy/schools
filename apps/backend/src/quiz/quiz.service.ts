@@ -72,4 +72,13 @@ export class QuizService {
       },
     });
   }
+
+  async isAnsweredByStudent(
+    userId: string,
+    quizId: string,
+  ) {
+    const student = await this.prismaService.student.findUnique({where: {userId: userId}})
+    const answer = await this.prismaService.studentAnswer.findFirst({where: {quizId: quizId, studentId: student?.id}})
+    return answer ? true : false
+  }
 }

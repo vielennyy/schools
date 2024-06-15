@@ -8,6 +8,7 @@
       "backend:start": "pnpm -F @school-helper/backend start",
       "frontend:dev": "pnpm -F @school-helper/frontend dev",
       "frontend:build": "pnpm -F @school-helper/frontend build",
+      "start": "pnpm backend:start && pnpm frontend:dev",
       "build": "pnpm -r build"
     },
     "engines": {

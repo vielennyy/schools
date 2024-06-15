@@ -124,7 +124,7 @@ export type GetSubject = {
   id: string,
   teacherId: string,
   title: string,
-  class?: string,
+  classId?: string,
 }
 
 export type GetClass = {
@@ -132,4 +132,11 @@ export type GetClass = {
   title: string,
   schoolId: string,
   homeroomTeacherId: string 
+}
+
+export type GetQuiz = {
+    id: string,
+    title: string,
+    creatorId: string,
+    subjectId: string,
 }

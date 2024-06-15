@@ -51,7 +51,7 @@ const AppRoutes = [
         element: <RegistrationPage/>
     },
     {
-        path: '/start-test',
+        path: '/test/start/:testId',
         element: <StartTest/>
     },
     // {

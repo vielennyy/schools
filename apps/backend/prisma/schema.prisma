@@ -107,10 +107,11 @@ model Teacher {
 model Class {
   id                String              @id @default(uuid())
   title             String
-  schoolId          String              @unique @map("school_id")
+  schoolId          String              @map("school_id")
   school            School              @relation(fields: [schoolId], references: [id])
   students          Student[]
-  homeroomTeacherId String              @unique @map("homeroom_teacher_id")
+  subjects          Subject[]
+  homeroomTeacherId String              @map("homeroom_teacher_id")
   homeroomTeacher   Teacher             @relation(fields: [homeroomTeacherId], references: [id])
   invitations       InvitationToClass[]
 
@@ -134,6 +135,8 @@ model Subject {
   title String
   teacherId String? @map("teacher_id")
   teacher Teacher? @relation(fields: [teacherId], references: [id])
+  classId String? @map("class_id")
+  class Class? @relation(fields: [classId], references: [id])
   task  Task[]
   quiz Quiz[]
 
@@ -145,7 +148,7 @@ model Task {
   title       String
   description String
   ratings     String
-  subjectId   String           @unique @map("subject_id")
+  subjectId   String           @map("subject_id")
   subject     Subject          @relation(fields: [subjectId], references: [id])
   attachments TaskAttachment[]
 
@@ -178,7 +181,7 @@ model Quiz {
   creator   Teacher        @relation(fields: [creatorId], references: [id])
   subjectId String?        @map("subject_id")
   subject   Subject?       @relation(fields: [subjectId], references: [id])
-  Answer    StudentAnswer?
+  Answer    StudentAnswer[]
 
   @@map("quiz")
 }
@@ -191,7 +194,7 @@ model Question {
   questionType  QuestionType   @map("question_type")
   quiz          Quiz           @relation(fields: [quizId], references: [id])
   quizId        String         @map("quiz_id")
-  Answer        StudentAnswer?
+  Answer        StudentAnswer[]
   score         Int?
 
   @@map("question")
@@ -200,13 +203,13 @@ model Question {
 model StudentAnswer {
   id         String   @id @default(uuid())
   student    Student  @relation(fields: [studentId], references: [id])
-  studentId  String   @unique @map("student_id")
+  studentId  String   @map("student_id")
   quiz       Quiz     @relation(fields: [quizId], references: [id])
-  quizId     String   @unique @map("quiz_id")
+  quizId     String   @map("quiz_id")
   question   Question @relation(fields: [questionId], references: [id])
-  questionId String   @unique @map("question_id")
+  questionId String   @map("question_id")
   response   String
-  createdAt  DateTime @unique @default(now()) @map("create_at")
+  createdAt  DateTime @default(now()) @map("create_at")
 
   @@map("answer")
 }

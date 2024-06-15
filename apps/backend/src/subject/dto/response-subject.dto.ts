@@ -16,9 +16,9 @@ export class ResponseSubjectDto {
     description: '27bec31a-5cc6-4c63-94dd-23f5ac493bbb',
   })
   teacherId: string;
-//   @ApiProperty({
-//     example: '7 class',
-//     description: 'classId',
-//   })
-//   classId: string;
+  @ApiProperty({
+    example: '7 class',
+    description: 'classId',
+  })
+  classId: string;
 }
